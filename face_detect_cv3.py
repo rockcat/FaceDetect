@@ -27,6 +27,7 @@ def processImage(cap, cascade, output):
         #flags = cv2.CV_HAAR_SCALE_IMAGE
     )
  
+    yoffs = image.shape[0]
     # Draw a rectangle around the faces
     index = 0
     scaled = np.zeros((MINI_SIZE,MINI_SIZE,3), np.uint8)
@@ -37,14 +38,12 @@ def processImage(cap, cascade, output):
         cv2.putText(image, msg, (xpos, ypos), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), lineType=cv2.LINE_AA)
         if (face.shape[0] > 0) and (face.shape[1] > 0):
             ratio = face.shape[0] / face.shape[1]
-
-            dim = (MINI_SIZE, int(MINI_SIZE * ratio))
-            scaled = cv2.resize(face, (MINI_SIZE,MINI_SIZE))
+            scaledWidth = int(MINI_SIZE * ratio)
+            scaled = cv2.resize(face, (MINI_SIZE, scaledWidth))
             xoffs = index * MINI_SIZE
-            yoffs = image.shape[0]
-            output[yoffs:yoffs+MINI_SIZE, xoffs:xoffs+MINI_SIZE] = scaled
-            output[0:yoffs, 0:image.shape[1]] = image
+            output[yoffs:yoffs+MINI_SIZE, xoffs:xoffs+scaledWidth] = scaled
             index = index + 1
+    output[0:yoffs, 0:image.shape[1]] = image
     cv2.imshow("Face Detector", output)
 
 def Main():
